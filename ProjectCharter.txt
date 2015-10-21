@@ -1,0 +1,38 @@
+﻿Title: ____
+Team:Kevin Chow, Omar Shaikh, Peter Wu, William Ho
+EECS 149/249A Project Charter, Fall, 2015 
+
+
+Project Goal
+This project will model the Ping Pong related Motion obtained from embedded sensors inside a Ping Pong racket.
+Project Approach
+The movements relevant to the Game will be modelled as a State Machine and will be determined based on the input from sensors and the timestamps associated with them. Detection would include detecting a Serve, Forehand, Backhand, all the while tracking speeds and Angle as well.
+Resources
+hardware used-
+software resources-
+mechanical wood hardware?
+bluetooth module
+
+
+
+
+Major components
+* low level Accelerometer readings with timestamps
+* Bluetooth communication
+* Theory and model deign
+* Data analysis and software platform development
+* Racket development
+Schedule
+* October 22: Project charter (this document)
+* October 28: Choice of platform finalized after discussion with GSIs.
+* November 4: Statecharts simulation model with logic and timing for controller.
+* November 11: Installed software for development, hello world servo control
+* November 18: Mini project update: Demonstrate sensor comm and servo action.
+* November 25: Measured sensor accuracy, modify simulation model.
+* December 2: Actuation in response to door sensor, timing of network measured.
+* December 9: System testing, measure false positives, assess timing effectiveness.
+* December 16: Demonstration video made, powerpoint prepared.
+* December 17: Final presentation and demo.
+* December 19: Project report and video turned in.
+Risk and Feasibility
+Timing is a major concern for us, we may consider time-stamping each data input to build reliable analysis. The communication may have issues that lead to unforeseen input delays. Software analysis may not accurately predict motions.
