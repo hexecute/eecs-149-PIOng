@@ -1,0 +1,42 @@
+...
+First *recorded* meeting minutes
+
+Tuesday slides:
+    Goals slide:
+        Minimum Viable Product
+        Stretch goals
+    Status slide:
+        Current status
+            Mainly planning
+            Kevin's gyroscope board mockup
+        Problems
+            Example: Omar's Wii-mote machine learning
+    Each person presents what they add to the slides
+
+Minimum Viable Product:
+    Ping pong paddle that can detect a swing
+        Data saved to a file over Bluetooth low energy and processed later
+
+Stretch goals:
+    Force sensor
+    Location of ball sensor (may be possible to integrate with force sensor)
+    Real-time processing with a web interface
+
+Hardware:
+    9-axis accelerometer with board {I don't remember the name of the board.}
+    Order for the board has been placed 
+    Potential issues:
+        Number of pins for additional sensors
+        Attaching sensor pins to board securely
+
+Software:
+    Python, SVM for machine learning
+    Probably not using temporal logic
+
+Hardware: Kevin, Will
+Software: Omar, Peter
+Divisions are primary focus, not solid boundaries.
+
+Paddle --(Physical attachment)--> Sensors --(Pins)--> Board 
+--(BLE)--> Desktop --(Machine learning script)--> Processing 
+--(Display medium)--> Results
