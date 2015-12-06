@@ -1,0 +1,144 @@
+//Based off code from here:
+//https://github.com/Seeed-Studio/IMU_10DOF/blob/master/examples/IMU_10DOF_Test/IMU_10DOF_Test.ino
+
+//Plus a tiny bit of inspiration from this:
+//http://www.instructables.com/id/Guide-to-gyro-and-accelerometer-with-Arduino-inclu/
+
+#include "Wire.h"
+#include "I2Cdev.h"
+#include "MPU9250.h"
+
+MPU9250 chip;
+I2Cdev I2C_M;
+
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+int16_t mx, my, mz;
+
+float a_xyz[3];
+float g_xyz[3];
+float m_xyz[3];
+
+float currAccel[3];
+
+void setup()
+{
+  // join I2C bus (I2Cdev library doesn't do this automatically)
+  Wire.begin();
+
+  // initialize serial communication
+  Serial.begin(9600);
+  
+  Serial.println("Initializing chip...");
+  chip.initialize();
+  Serial.println("Done initializing chip!");
+  
+  Serial.println(chip.testConnection() ? "Connection successful" : "Connection failed");
+  getRawAccelData();
+  getRawGyroData();
+  getFilteredAccelData();
+  getActualAccel();
+  getFilteredGyroData();
+  
+  delay(150);
+}
+
+void loop()
+{
+  getFilteredAccelData();
+  getActualAccel();
+  getFilteredGyroData(); 
+  
+  /*Serial.println("Acceleration(g) of X,Y,Z:");
+  Serial.print(a_xyz[0]);
+  Serial.print(",");
+  Serial.print(a_xyz[1]);
+  Serial.print(",");
+  Serial.println(a_xyz[2]);*/
+  
+  Serial.println("Gyro(degress/s) of X,Y,Z:");
+  Serial.print(g_xyz[0]);
+  Serial.print(",");
+  Serial.print(g_xyz[1]);
+  Serial.print(",");
+  Serial.println(g_xyz[2]);
+  
+  /*Serial.println("Current Acceleration:");
+  Serial.print(currAccel[0]);
+  Serial.print(",");
+  Serial.print(currAccel[1]);
+  Serial.print(",");
+  Serial.println(currAccel[2]);*/
+  
+  delay(150);
+}
+
+void getRawAccelData()
+{
+  chip.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+  
+  a_xyz[0] = (float) ax / 16384;
+  a_xyz[1] = (float) ay / 16384;
+  a_xyz[2] = (float) az / 16384;
+}
+
+void getRawGyroData()
+{
+  chip.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+  
+  g_xyz[0] = (float) gx * 250 / 32768;
+  g_xyz[1] = (float) gy * 250 / 32768;
+  g_xyz[2] = (float) gz * 250 / 32768;
+}
+
+void getFilteredAccelData()
+{
+  float a_lastFilteredData[3];
+  a_lastFilteredData[0] = a_xyz[0];
+  a_lastFilteredData[1] = a_xyz[1];
+  a_lastFilteredData[2] = a_xyz[2];
+  
+  getRawAccelData();
+  
+  
+  a_xyz[0] = lowPassFilter(a_xyz[0], 0.1, a_lastFilteredData[0]);
+  a_xyz[1] = lowPassFilter(a_xyz[1], 0.1, a_lastFilteredData[1]);
+  a_xyz[2] = lowPassFilter(a_xyz[2], 0.1, a_lastFilteredData[2]);
+}
+
+void getFilteredGyroData()
+{
+  float g_lastFilteredData[3];
+  g_lastFilteredData[0] = g_xyz[0];
+  g_lastFilteredData[1] = g_xyz[1];
+  g_lastFilteredData[2] = g_xyz[2];
+  
+  getRawGyroData();
+  
+  //g_xyz[0] = lowPassFilter(g_xyz[0], 0.01, g_lastFilteredData[0]);
+  //g_xyz[1] = lowPassFilter(g_xyz[1], 0.01, g_lastFilteredData[1]);
+  //g_xyz[2] = lowPassFilter(g_xyz[2], 0.01, g_lastFilteredData[2]);
+  
+  g_xyz[0] = (0.98 * lowPassFilter(g_xyz[0], 0.01, g_lastFilteredData[0]) * 0.15) + (0.02 * a_xyz[0]);
+  g_xyz[1] = (0.98 * lowPassFilter(g_xyz[1], 0.01, g_lastFilteredData[1]) * 0.15) + (0.02 * a_xyz[1]);
+  g_xyz[2] = (0.98 * lowPassFilter(g_xyz[2], 0.01, g_lastFilteredData[2]) * 0.15) + (0.02 * a_xyz[2]) - 0.02;
+}
+
+void getActualAccel()
+{
+  float a_lastFilteredData[3];
+  a_lastFilteredData[0] = a_xyz[0];
+  a_lastFilteredData[1] = a_xyz[1];
+  a_lastFilteredData[2] = a_xyz[2];
+  
+  getFilteredAccelData();
+  
+  currAccel[0] = a_xyz[0] - a_lastFilteredData[0];
+  currAccel[1] = a_xyz[1] - a_lastFilteredData[1];
+  currAccel[2] = a_xyz[2] - a_lastFilteredData[2];
+}
+
+float lowPassFilter(float rawData, float filterValue, float lastFilteredData)
+{
+  return (rawData * filterValue) + (lastFilteredData * (1 - filterValue));  
+}
