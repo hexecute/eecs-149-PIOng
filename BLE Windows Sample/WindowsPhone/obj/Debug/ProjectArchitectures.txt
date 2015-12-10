@@ -1,0 +1,1 @@
+C:\Users\bill\Desktop\C#\WindowsPhone\BluetoothGattHeartRate.WindowsPhone.csproj;neutral

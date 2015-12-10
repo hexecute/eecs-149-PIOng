@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>QUICKSAND</Machine>
+    <WindowsUser>bill</WindowsUser>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <TargetOsVersion>6.3</TargetOsVersion>
+    <TargetOsDescription>Windows 8.1</TargetOsDescription>
+    <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
+    <PackageArchitecture>neutral</PackageArchitecture>
+    <PackageIdentityName>Microsoft.SDKSamples.BluetoothGattHeartRate.CS</PackageIdentityName>
+    <IntermediateOutputPath>C:\Users\bill\Desktop\C#\Windows\obj\Debug\</IntermediateOutputPath>
+    <RegisteredManifestChecksum>6ED6171F6C356210CA2A82FC39283BBB1CF8B097841C2505FBA2C8E417DAFA85</RegisteredManifestChecksum>
+    <RegisteredPackageMoniker>Microsoft.SDKSamples.BluetoothGattHeartRate.CS_1.0.0.0_neutral__8wekyb3d8bbwe</RegisteredPackageMoniker>
+    <RegisteredUserModeAppID>Microsoft.SDKSamples.BluetoothGattHeartRate.CS_8wekyb3d8bbwe!SDKSample.App</RegisteredUserModeAppID>
+    <RegisteredPackageID>Microsoft.SDKSamples.BluetoothGattHeartRate.CS</RegisteredPackageID>
+    <RegisteredPackagePublisher>CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</RegisteredPackagePublisher>
+    <RegisteredVersion>1.0.0.0</RegisteredVersion>
+    <JitOptimizationSuppressed>True</JitOptimizationSuppressed>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-12-10T18:03:34.500</Modified>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\BluetoothGattHeartRate.Windows.exe">
+      <PackagePath>BluetoothGattHeartRate.Windows.exe</PackagePath>
+      <Modified>2015-12-10T19:03:56.655</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\mediumtile-sdk.png">
+      <PackagePath>Assets\mediumtile-sdk.png</PackagePath>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\microsoft-sdk.png">
+      <PackagePath>Assets\microsoft-sdk.png</PackagePath>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\smalltile-Windows-sdk.png">
+      <PackagePath>Assets\smalltile-Windows-sdk.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\smalltile-Phone-sdk.png">
+      <PackagePath>Assets\smalltile-Phone-sdk.png</PackagePath>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\splash-Windows-sdk.png">
+      <PackagePath>Assets\splash-Windows-sdk.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\splash-Phone-sdk.png">
+      <PackagePath>Assets\splash-Phone-sdk.png</PackagePath>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\squaretile-sdk.png">
+      <PackagePath>Assets\squaretile-sdk.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\storelogo-sdk.png">
+      <PackagePath>Assets\storelogo-sdk.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\tile-sdk.png">
+      <PackagePath>Assets\tile-sdk.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Shared\Assets\windows-sdk.png">
+      <PackagePath>Assets\windows-sdk.png</PackagePath>
+      <Modified>2014-09-06T10:43:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\BluetoothGattHeartRate.Windows.xr.xml">
+      <PackagePath>BluetoothGattHeartRate.Windows.xr.xml</PackagePath>
+      <Modified>2015-12-10T18:03:32.387</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\App.xbf">
+      <PackagePath>App.xbf</PackagePath>
+      <Modified>2015-12-10T18:03:32.604</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\Scenario1_DeviceEvents.xbf">
+      <PackagePath>Scenario1_DeviceEvents.xbf</PackagePath>
+      <Modified>2015-12-10T18:03:32.629</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\Scenario2_ReadCharacteristicValue.xbf">
+      <PackagePath>Scenario2_ReadCharacteristicValue.xbf</PackagePath>
+      <Modified>2015-12-10T18:03:32.639</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\Scenario3_WriteCharacteristicValue.xbf">
+      <PackagePath>Scenario3_WriteCharacteristicValue.xbf</PackagePath>
+      <Modified>2015-12-10T18:03:32.646</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\MainPage.xbf">
+      <PackagePath>MainPage.xbf</PackagePath>
+      <Modified>2015-12-10T18:03:32.611</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\Styles\Styles.xbf">
+      <PackagePath>Styles\Styles.xbf</PackagePath>
+      <Modified>2015-12-10T18:03:32.620</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\bill\Desktop\C#\Windows\bin\Debug\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+      <Modified>2015-12-10T18:03:34.107</Modified>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>
