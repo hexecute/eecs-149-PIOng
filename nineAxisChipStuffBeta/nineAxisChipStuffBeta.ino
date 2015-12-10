@@ -34,43 +34,47 @@ void setup()
   Serial.println("Done initializing chip!");
   
   Serial.println(chip.testConnection() ? "Connection successful" : "Connection failed");
+
   getRawAccelData();
   getRawGyroData();
-  getFilteredAccelData();
-  getActualAccel();
-  getFilteredGyroData();
   
-  delay(150);
+  while (Serial.readString() != "setup done")
+  {
+    getFilteredAccelData();
+    getActualAccel();
+    getFilteredGyroData();
+    
+    Serial.print("I");
+    Serial.print(",");
+    Serial.print(atan2(a_xyz[2], a_xyz[0]) * (180.0 / PI));
+    Serial.print(",");
+    Serial.print(atan2(a_xyz[2], a_xyz[1]) * (180.0 / PI));
+    Serial.print(",");
+    Serial.println(atan2(a_xyz[1], a_xyz[0]) * (180.0 / PI));
+  }
 }
 
 void loop()
 {
+  if (Serial.readString() == "reset")
+  {
+    setup();
+  }
   getFilteredAccelData();
   getActualAccel();
   getFilteredGyroData(); 
   
-  /*Serial.println("Acceleration(g) of X,Y,Z:");
-  Serial.print(a_xyz[0]);
+  Serial.print(currAccel[0]);
   Serial.print(",");
-  Serial.print(a_xyz[1]);
+  Serial.print(currAccel[1]);
   Serial.print(",");
-  Serial.println(a_xyz[2]);*/
-  
-  Serial.println("Gyro(degress/s) of X,Y,Z:");
+  Serial.print(currAccel[2]);
+  Serial.print(",");
   Serial.print(g_xyz[0]);
   Serial.print(",");
   Serial.print(g_xyz[1]);
   Serial.print(",");
   Serial.println(g_xyz[2]);
-  
-  /*Serial.println("Current Acceleration:");
-  Serial.print(currAccel[0]);
-  Serial.print(",");
-  Serial.print(currAccel[1]);
-  Serial.print(",");
-  Serial.println(currAccel[2]);*/
-  
-  delay(150);
 }
 
 void getRawAccelData()
@@ -114,10 +118,6 @@ void getFilteredGyroData()
   g_lastFilteredData[2] = g_xyz[2];
   
   getRawGyroData();
-  
-  //g_xyz[0] = lowPassFilter(g_xyz[0], 0.01, g_lastFilteredData[0]);
-  //g_xyz[1] = lowPassFilter(g_xyz[1], 0.01, g_lastFilteredData[1]);
-  //g_xyz[2] = lowPassFilter(g_xyz[2], 0.01, g_lastFilteredData[2]);
   
   g_xyz[0] = (0.98 * lowPassFilter(g_xyz[0], 0.01, g_lastFilteredData[0]) * 0.15) + (0.02 * a_xyz[0]);
   g_xyz[1] = (0.98 * lowPassFilter(g_xyz[1], 0.01, g_lastFilteredData[1]) * 0.15) + (0.02 * a_xyz[1]);

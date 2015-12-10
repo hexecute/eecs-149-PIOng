@@ -5,12 +5,21 @@ using System.IO.Ports;
 public class Mover : MonoBehaviour
 {
 	public GameObject thingToMove;
-	private SerialPort serialPort = new SerialPort("\\\\.\\COM11", 9600);
+	private SerialPort serialPort = new SerialPort("\\\\.\\COM14", 9600);
+	private Rigidbody rigidBodyOfThing;
 
 	void Start()
 	{
 		serialPort.Open();
-		serialPort.ReadTimeout = 1;
+		serialPort.ReadTimeout = 100;
+
+		rigidBodyOfThing = GetComponent<Rigidbody>();
+
+		while (!serialPort.IsOpen)
+		{
+			Debug.Log("not connected");
+		}
+		serialPort.Write("reset");
 	}
 
 	void Update()
@@ -21,20 +30,59 @@ public class Mover : MonoBehaviour
 			{
 				string result = serialPort.ReadLine();
 				string[] splitResult = result.Split(',');
-				if (splitResult.Length == 3)
+
+				if ((splitResult.Length == 4) && (splitResult[0].Equals("I")))
 				{
 					try
 					{
-						thingToMove.transform.Rotate
+						thingToMove.transform.rotation =
+							Quaternion.Euler
 							(
-								int.Parse(splitResult[0]), int.Parse(splitResult[1]), int.Parse(splitResult[2])
+								float.Parse(splitResult[1]),
+								float.Parse(splitResult[2]),
+								float.Parse(splitResult[3])
 							);
-						Debug.Log(splitResult[0] + ", " + splitResult[1] + ", " + splitResult[2]);
+
+						serialPort.Write("setup done");
 					}
 					catch (System.Exception)
 					{
 
 					}
+				}
+
+				else if (splitResult.Length == 6)
+				{
+					try
+					{
+
+						rigidBodyOfThing.velocity = 
+							new Vector3
+							(
+								rigidBodyOfThing.velocity.x + (9.8f * float.Parse(splitResult[0]) * Time.deltaTime),
+								rigidBodyOfThing.velocity.y + (9.8f * float.Parse(splitResult[1]) * Time.deltaTime),
+								rigidBodyOfThing.velocity.z + (9.8f * float.Parse(splitResult[2]) * Time.deltaTime)
+							);
+
+						rigidBodyOfThing.angularVelocity =
+							new Vector3
+							(
+								rigidBodyOfThing.angularVelocity.x + (9.8f * float.Parse(splitResult[3]) * Time.deltaTime),
+								rigidBodyOfThing.angularVelocity.y + (9.8f * float.Parse(splitResult[4]) * Time.deltaTime),
+								rigidBodyOfThing.angularVelocity.z + (9.8f * float.Parse(splitResult[5]) * Time.deltaTime)
+							);
+
+
+						Debug.Log(result);
+					}
+					catch
+					{
+
+					}
+				}
+				else
+				{
+
 				}
 			}
 			catch (System.Exception)
@@ -44,7 +92,7 @@ public class Mover : MonoBehaviour
 		}
 		else
 		{
-
+			Debug.Log("DISCONNECTED");
 		}
 	}
 }
