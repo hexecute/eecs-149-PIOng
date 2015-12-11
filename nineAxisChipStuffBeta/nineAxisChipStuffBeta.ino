@@ -4,6 +4,9 @@
 //Plus a tiny bit of inspiration from this:
 //http://www.instructables.com/id/Guide-to-gyro-and-accelerometer-with-Arduino-inclu/
 
+//And from here:
+//http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/
+
 #include "Wire.h"
 #include "I2Cdev.h"
 #include "MPU9250.h"
@@ -19,7 +22,11 @@ float a_xyz[3];
 float g_xyz[3];
 float m_xyz[3];
 
-float currAccel[3];
+float currPseudoVelocity[3];
+
+unsigned long recordedTime;
+
+void (*reset)() = 0;
 
 void setup()
 {
@@ -28,53 +35,67 @@ void setup()
 
   // initialize serial communication
   Serial.begin(9600);
+  Serial.setTimeout(150);
   
   Serial.println("Initializing chip...");
   chip.initialize();
   Serial.println("Done initializing chip!");
   
   Serial.println(chip.testConnection() ? "Connection successful" : "Connection failed");
-
+  recordedTime = millis();
+  
   getRawAccelData();
   getRawGyroData();
   
-  while (Serial.readString() != "setup done")
+  while (Serial.readString() != "s")
   {
     getFilteredAccelData();
-    getActualAccel();
+    getPseudoVelocity();
     getFilteredGyroData();
     
     Serial.print("I");
     Serial.print(",");
-    Serial.print(atan2(a_xyz[2], a_xyz[0]) * (180.0 / PI));
-    Serial.print(",");
-    Serial.print(atan2(a_xyz[2], a_xyz[1]) * (180.0 / PI));
-    Serial.print(",");
-    Serial.println(atan2(a_xyz[1], a_xyz[0]) * (180.0 / PI));
+    //Serial.print(atan2(a_xyz[1], sqrt(sq(a_xyz[0])) + sq(a_xyz[2])) * (180.0 / PI));
+    Serial.print(0);
+    Serial.print(",");        
+    //Serial.print(atan2(a_xyz[0], sqrt(sq(a_xyz[0])) + sq(a_xyz[2])) * (180.0 / PI));
+    Serial.print(180);
+    Serial.print(",");   
+    Serial.println(atan2(sqrt(sq(a_xyz[0])) + sq(a_xyz[1]), a_xyz[2]) * (180.0 / PI));
+    //Serial.println(0);
+
+
+    recordedTime = millis();
   }
+  
 }
 
 void loop()
 {
-  if (Serial.readString() == "reset")
+  if (Serial.readString() == "r")
   {
-    setup();
+    reset();
   }
-  getFilteredAccelData();
-  getActualAccel();
-  getFilteredGyroData(); 
   
-  Serial.print(currAccel[0]);
+  getFilteredAccelData();
+  getPseudoVelocity();
+  getFilteredGyroData(); 
+
+  recordedTime = millis();
+  
+  Serial.print(currPseudoVelocity[0]);
   Serial.print(",");
-  Serial.print(currAccel[1]);
+  Serial.print(currPseudoVelocity[1]);
   Serial.print(",");
-  Serial.print(currAccel[2]);
+  Serial.print(currPseudoVelocity[2]);
   Serial.print(",");
   Serial.print(g_xyz[0]);
   Serial.print(",");
   Serial.print(g_xyz[1]);
   Serial.print(",");
-  Serial.println(g_xyz[2]);
+  Serial.print(g_xyz[2]);
+  Serial.print(",");
+  Serial.println(recordedTime / 1000.0);
 }
 
 void getRawAccelData()
@@ -124,7 +145,7 @@ void getFilteredGyroData()
   g_xyz[2] = (0.98 * lowPassFilter(g_xyz[2], 0.01, g_lastFilteredData[2]) * 0.15) + (0.02 * a_xyz[2]) - 0.02;
 }
 
-void getActualAccel()
+void getPseudoVelocity()
 {
   float a_lastFilteredData[3];
   a_lastFilteredData[0] = a_xyz[0];
@@ -133,9 +154,9 @@ void getActualAccel()
   
   getFilteredAccelData();
   
-  currAccel[0] = a_xyz[0] - a_lastFilteredData[0];
-  currAccel[1] = a_xyz[1] - a_lastFilteredData[1];
-  currAccel[2] = a_xyz[2] - a_lastFilteredData[2];
+  currPseudoVelocity[0] = a_xyz[0] - a_lastFilteredData[0];
+  currPseudoVelocity[1] = a_xyz[1] - a_lastFilteredData[1];
+  currPseudoVelocity[2] = a_xyz[2] - a_lastFilteredData[2];
 }
 
 float lowPassFilter(float rawData, float filterValue, float lastFilteredData)

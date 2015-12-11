@@ -5,7 +5,7 @@ using System.IO.Ports;
 public class Mover : MonoBehaviour
 {
 	public GameObject thingToMove;
-	private SerialPort serialPort = new SerialPort("\\\\.\\COM14", 9600);
+	private SerialPort serialPort = new SerialPort("\\\\.\\COM11", 9600);
 	private Rigidbody rigidBodyOfThing;
 
 	void Start()
@@ -19,7 +19,7 @@ public class Mover : MonoBehaviour
 		{
 			Debug.Log("not connected");
 		}
-		serialPort.Write("reset");
+		serialPort.Write("r");
 	}
 
 	void Update()
@@ -42,8 +42,8 @@ public class Mover : MonoBehaviour
 								float.Parse(splitResult[2]),
 								float.Parse(splitResult[3])
 							);
-
-						serialPort.Write("setup done");
+						Debug.Log(result);
+						//serialPort.Write("s");
 					}
 					catch (System.Exception)
 					{
@@ -51,7 +51,7 @@ public class Mover : MonoBehaviour
 					}
 				}
 
-				else if (splitResult.Length == 6)
+				else if (splitResult.Length == 7)
 				{
 					try
 					{
@@ -59,17 +59,17 @@ public class Mover : MonoBehaviour
 						rigidBodyOfThing.velocity = 
 							new Vector3
 							(
-								rigidBodyOfThing.velocity.x + (9.8f * float.Parse(splitResult[0]) * Time.deltaTime),
-								rigidBodyOfThing.velocity.y + (9.8f * float.Parse(splitResult[1]) * Time.deltaTime),
-								rigidBodyOfThing.velocity.z + (9.8f * float.Parse(splitResult[2]) * Time.deltaTime)
+								5 * 9.8f * float.Parse(splitResult[0]) * Time.deltaTime,
+								5 * 9.8f * float.Parse(splitResult[1]) * Time.deltaTime,
+								5 * 9.8f * float.Parse(splitResult[2]) * Time.deltaTime
 							);
 
 						rigidBodyOfThing.angularVelocity =
 							new Vector3
 							(
-								rigidBodyOfThing.angularVelocity.x + (9.8f * float.Parse(splitResult[3]) * Time.deltaTime),
-								rigidBodyOfThing.angularVelocity.y + (9.8f * float.Parse(splitResult[4]) * Time.deltaTime),
-								rigidBodyOfThing.angularVelocity.z + (9.8f * float.Parse(splitResult[5]) * Time.deltaTime)
+								50 * float.Parse(splitResult[3]) * Time.deltaTime,
+								50 * float.Parse(splitResult[4]) * Time.deltaTime,
+								50 * float.Parse(splitResult[5]) * Time.deltaTime
 							);
 
 
