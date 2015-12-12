@@ -5,7 +5,7 @@ using System.IO.Ports;
 public class Mover : MonoBehaviour
 {
 	public GameObject thingToMove;
-	private SerialPort serialPort = new SerialPort("\\\\.\\COM11", 9600);
+	private SerialPort serialPort = new SerialPort("\\\\.\\COM8", 9600);
 	private Rigidbody rigidBodyOfThing;
 
 	void Start()
@@ -43,7 +43,7 @@ public class Mover : MonoBehaviour
 								float.Parse(splitResult[3])
 							);
 						Debug.Log(result);
-						//serialPort.Write("s");
+						serialPort.Write("s");
 					}
 					catch (System.Exception)
 					{

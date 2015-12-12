@@ -22,9 +22,14 @@ float a_xyz[3];
 float g_xyz[3];
 float m_xyz[3];
 
-float currPseudoVelocity[3];
+String logger[20];
+int i=0;
+boolean stillLogging = true;
 
+float currPseudoVelocity[3];
+float RAD2DEG = 180 / PI;
 unsigned long recordedTime;
+unsigned long startingTime;
 
 void (*reset)() = 0;
 
@@ -35,14 +40,14 @@ void setup()
 
   // initialize serial communication
   Serial.begin(9600);
-  Serial.setTimeout(150);
+  Serial.setTimeout(1);
   
   Serial.println("Initializing chip...");
   chip.initialize();
   Serial.println("Done initializing chip!");
   
   Serial.println(chip.testConnection() ? "Connection successful" : "Connection failed");
-  recordedTime = millis();
+  startingTime = millis();
   
   getRawAccelData();
   getRawGyroData();
@@ -55,34 +60,118 @@ void setup()
     
     Serial.print("I");
     Serial.print(",");
-    //Serial.print(atan2(a_xyz[1], sqrt(sq(a_xyz[0])) + sq(a_xyz[2])) * (180.0 / PI));
+    //Serial.print(atan2(a_xyz[1], sqrt(sq(a_xyz[0])) + sq(a_xyz[2])) * RAD2DEG);
     Serial.print(0);
     Serial.print(",");        
-    //Serial.print(atan2(a_xyz[0], sqrt(sq(a_xyz[0])) + sq(a_xyz[2])) * (180.0 / PI));
+    //Serial.print(atan2(a_xyz[0], sqrt(sq(a_xyz[0])) + sq(a_xyz[2])) * RAD2DEG);
     Serial.print(180);
     Serial.print(",");   
-    Serial.println(atan2(sqrt(sq(a_xyz[0])) + sq(a_xyz[1]), a_xyz[2]) * (180.0 / PI));
+    Serial.println(atan2(sqrt(sq(a_xyz[0])) + sq(a_xyz[1]), a_xyz[2]) * RAD2DEG);
     //Serial.println(0);
 
 
     recordedTime = millis();
   }
+  startingTime = millis();
   
 }
 
 void loop()
 {
-  if (Serial.readString() == "r")
+  String input = Serial.readString();
+  if (input == "r")
   {
     reset();
   }
-  
-  getFilteredAccelData();
-  getPseudoVelocity();
-  getFilteredGyroData(); 
+  else if (input == "l")
+  {
+    /*logger[i] = String("Reading:" +
+      String(a_xyz[0]) + "," +
+      String(a_xyz[1]) + "," +
+      String(a_xyz[2]) + "," +
+      String(g_xyz[0]) + "," +
+      String(g_xyz[1]) + "," +
+      String(g_xyz[2]) + "," +
+      String(mx) + "," +
+      String(my) + "," +
+      String(mz) 
+      );
+      */
+      logger[i] = String("Reading Time:" + String((recordedTime-startingTime)/ 1000.0));
+      
+    //Serial.println(logger[i]);
+    //Serial.println(a_xyz[0] + "lol");
+    //Serial.println("lalala");
+    i++;
+    if(i==9) input = "e";
+      
+  }
+  else if (input == "e")
+  {
+    stillLogging = !stillLogging;
+    i=0;
+    while(i<10){
+    Serial.println(logger[i]);
+    i++;
+    }
+  }
+  if(stillLogging){
+  //getFilteredAccelData();
+  //getPseudoVelocity();
+  //getFilteredGyroData(); 
 
+  getRawAccelData();
+  getRawGyroData();
   recordedTime = millis();
   
+  
+  Serial.print((recordedTime-startingTime) / 1000.0);
+  Serial.print(",");
+  Serial.print(a_xyz[0]);
+  Serial.print(",");
+  Serial.print(a_xyz[1]);
+  Serial.print(",");
+  Serial.print(a_xyz[2]);
+  Serial.print(",");
+  Serial.print(g_xyz[0]);
+  Serial.print(",");
+  Serial.print(g_xyz[1]);
+  Serial.print(",");
+  Serial.print(g_xyz[2]);
+  Serial.print(",");
+  Serial.print(mx);
+  Serial.print(",");
+  Serial.print(my);
+  Serial.print(",");
+  Serial.println(mz);
+  }
+
+  
+  /*
+  //chip.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+  recordedTime = millis();
+  Serial.print(recordedTime / 1000.0);
+  Serial.print(",");
+  Serial.print(ax);
+  Serial.print(",");
+  Serial.print(ay);
+  Serial.print(",");
+  Serial.print(az);
+  Serial.print(",");
+  Serial.print(gx);
+  Serial.print(",");
+  Serial.print(gy);
+  Serial.print(",");
+  Serial.print(gz);
+  Serial.print(",");
+  Serial.print(mx);
+  Serial.print(",");
+  Serial.print(my);
+  Serial.print(",");
+  Serial.println(mz);
+  */
+  
+  /*
   Serial.print(currPseudoVelocity[0]);
   Serial.print(",");
   Serial.print(currPseudoVelocity[1]);
@@ -96,6 +185,8 @@ void loop()
   Serial.print(g_xyz[2]);
   Serial.print(",");
   Serial.println(recordedTime / 1000.0);
+  */
+  //delay(80);
 }
 
 void getRawAccelData()
@@ -163,3 +254,4 @@ float lowPassFilter(float rawData, float filterValue, float lastFilteredData)
 {
   return (rawData * filterValue) + (lastFilteredData * (1 - filterValue));  
 }
+ 
