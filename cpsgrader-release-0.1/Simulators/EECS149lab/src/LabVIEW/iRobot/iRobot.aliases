@@ -1,0 +1,15 @@
+[My Computer]
+My Computer = "10.211.55.3"
+
+[myRIO]
+myRIO = "172.22.11.2"
+
+[NI-sbRIO9632-0145DDE0]
+NI-sbRIO9632-0145DDE0 = "192.168.1.200"
+
+[sbRIO]
+sbRIO = "0.0.0.0"
+
+[sbRIO-9632]
+sbRIO-9632 = "192.168.1.200"
+

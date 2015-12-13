@@ -1,0 +1,36 @@
+### Avoid left
+avoid_left_region := y[t] < 3.5 or x[t] > 4
+goal_left_short := alw_[0, 30.] avoid_left_region 
+
+param p1=1., p2=2., tau= 1.
+avoid_left_param := y[t] < p1 or x[t] > p2
+goal_left_param := alw_[0, tau] avoid_left_param
+mu := y[t] < p1
+
+### trace tests
+
+test obstacle_left: "Environment - short obstacle left.xml", 30.1, true
+{
+	test_goal 
+    {goal_left_short,
+     "REQ FAILED: Couldn't avoid obstacle on the left",
+     "REQ PASSED: Avoided obstacle on the left",
+     false
+    }
+
+	test_goal(tau = 40) 
+    {mu,
+     "REQ FAILED: Couldn't avoid obstacle on the left",
+     "REQ PASSED: Avoided obstacle on the left",
+     false
+    }
+
+	test_goal(tau = 40, p1= 3, p2 = 5) 
+    {goal_left_param,
+     "REQ FAILED: Couldn't avoid obstacle on the left",
+     "REQ PASSED: Avoided obstacle on the left",
+     false
+    }
+
+}
+

@@ -1,0 +1,6 @@
+# sub formula
+
+mu_x := x[t] > 0. 
+mu_y := y[t] > 0. 
+
+mux_or_muy := mu_x or mu_y

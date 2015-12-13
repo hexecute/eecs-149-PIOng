@@ -1,0 +1,5 @@
+signal x,y,z,d
+param rob_ref = 5.44876944 
+
+mu_y := y[t] > 0. 
+phi := ev_[0, 0.2]  (mu_y)

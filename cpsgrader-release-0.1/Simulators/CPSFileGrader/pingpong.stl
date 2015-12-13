@@ -1,0 +1,49 @@
+# signals measured by the Paddle
+signal ax,ay,az,gx,gy,gz,mx,my,mz
+
+#Time Horizon?
+param Tmax = 3.2, startingTime = 0.
+
+#param preMidTime = 1.3
+#param midTime_1 = 1.55
+#param midTime_2 = 1.75
+#param postMidTime = 1.8
+
+#param preMidTime = 1.3
+#param midTime_1 = 1.55
+#param midTime_2 = 1.75
+#param postMidTime = 1.8
+
+
+param preMidTime = 1.49
+param midTime_1 = 1.74
+param midTime_2 = 1.94
+param postMidTime = 1.99
+
+#Defines the goal region
+param y_min= 3., x_max = 5.
+
+# define region
+preMid := ay[t]<1.0
+mid := az[t]> 0.65 and ay[t]> 0 and ax[t]>0
+postMid := ay[t]< 0 and ax[t]<0
+
+
+# counter property  
+
+preMidProperty := ev_[0, preMidTime] preMid
+midProperty := ev_[ midTime_1, midTime_2 ] mid
+postMidProperty := ev_[postMidTime, Tmax] postMid
+
+
+# Defining the test 
+test pingPongTest: "data_svm/fd/Trace_spaces.txt"
+{	
+    logPingPong(Tmax=3.2)
+    {
+    preMidProperty and midProperty and postMidProperty,
+     "Requirement PASSED:",
+     "PROBLEM: NOthing!",
+     false
+    }
+}

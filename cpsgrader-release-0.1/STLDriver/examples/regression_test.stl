@@ -1,0 +1,96 @@
+# This file is used for regression tests of monitoring algorithms- it uses trace data stored in the file regression_test_trace.txt
+
+signal x,y,q1,q2
+
+# simple atomic predicates
+
+param rob_mu_x = -1.514648
+mu_x := x[t]>0
+
+param rob_mu_y =  2.5648
+mu_y := y[t]>0
+
+param rob_mu_q1 = 0
+mu_q1 := q1[t]>0
+
+param rob_mu_q2 = -3
+mu_q2 := q2[t]>0
+ 
+#  atomic predicate expressions
+
+param rob_mu_abs_x = 1.514648
+mu_abs_x := abs(x[t])>0
+
+param rob_mu_abs_y = 2.5648
+mu_abs_y := abs(y[t])>0
+
+param rob_mu_x_plus_y = 1.050152
+mu_x_plus_y := x[t]+ y[t] >0
+
+param rob_mu_x_minus_y = -4.079448
+mu_x_minus_y := x[t] - y[t] >0
+
+param rob_mu_x_mult_y =  -3.8847691904
+mu_x_mult_y := x[t] * y[t] >0
+
+
+# NOT operator
+param rob_phi_not1 = 1.514648
+phi_not1 := not (x[t]>0)
+
+# BOOLEAN connectors 
+param rob_phi_or1 = 2.5648
+phi_or1 := mu_x or mu_y
+
+param rob_phi_and1 = -1.514648
+phi_and1 := mu_x and mu_y
+
+param rob_phi_and_or = -1.514648
+phi_and_or := mu_x and (mu_y or mu_q1)
+
+param rob_phi_implies1 = 2.5648
+phi_implies1 := mu_x => mu_y
+
+# EVENTUALLY operator
+
+param rob_phi_ev1 = -1.514648
+phi_ev1 := ev_[0,0.1] (mu_x)
+
+param rob_phi_ev2 = -1.448769
+phi_ev2 := ev_[0,1] (mu_x)
+
+param rob_phi_ev3 = 3.514648
+phi_ev3 := ev_[0,0.1] (mu_y)
+
+param rob_phi_ev4 = 5.448769 
+phi_ev4 := ev_[0,1] (mu_y)
+
+# ALWAYS operator
+
+param rob_phi_alw1 = -1.746353
+phi_alw1 := alw_[0,0.1] (mu_x)
+
+param rob_phi_alw2 = -1.746353
+phi_alw2 := alw_[0,1] (mu_x)
+
+param rob_phi_alw3 = -55.600062
+phi_alw3 := alw_[0,0.1] (mu_y)
+
+param rob_phi_alw4 = -55.600062
+phi_alw4 := alw_[0,1] (mu_y)
+
+# UNTIL operator
+
+param rob_phi_until = -1.448769
+phi_until := (mu_q1) until_[0,1] (mu_x)
+
+test regression: "examples/regression_test_trace.txt" 
+{
+    fault_regression 
+    {
+    mu_x,
+    "",
+    "", 
+    false
+    }
+}

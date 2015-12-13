@@ -1,0 +1,91 @@
+### Avoid left
+avoid_left_region := y[t] < 3.5 or x[t] > 4
+goal_left_short := alw_[0, 30.] avoid_left_region 
+goal_left_long := alw_[0, 50.] avoid_left_region 
+
+### Avoid right
+avoid_right_region := y[t] < 3.5 or x[t] < 6
+goal_right_short := alw_[0, 30.] avoid_right_region 
+goal_right_long := alw_[0, 50.] avoid_right_region 
+
+## Circle 
+reorient_left := (abs(lws[t] + rws[t]) < 1) and (rws[t] > 1) 
+reorient_right := (abs(lws[t] + rws[t]) <1) and (lws[t] > 1) 
+reorient := (reorient_left) or (reorient_right) 
+yaw0 := abs(yaw[t])< 5 
+circle := (yaw0) and (reorient until_[1, 50] (yaw0))
+fault_circle := ev_[0, 10.] (circle)
+
+# Hill top
+not_high_enough := z[t] < 0.4
+goal_top_hill := alw_[0, 25] not_high_enough
+
+### Navigation tests 
+
+test nav_left: "Environment - short obstacle left.xml", 30.1, true
+{
+	test_goal 
+    {goal_left_short,
+     "REQUIREMENT FAILED: Avoid obstacle in 30s and keep going left",
+     "REQUIREMENT PASSED: Avoid obstacle in 30s and keep going left",
+     false
+    }
+
+	test_circle 
+	{fault_circle,
+   	"ERROR SCENARIO DETECTED: Circles in-place\n                         POSSIBLE CAUSE: Use of strict equality (or very low tolerance) in re-orientation check",
+	"",
+	true
+	}
+}
+
+test nav_right: "Environment - short obstacle right.xml", 30.1, true
+{
+	test_goal 
+    {goal_right_short,
+     "REQ FAILED: Couldn't avoid obstacle on the right",
+     "REQ PASSED: Avoided obstacle on the right",
+     false
+    }
+
+	test_circle 
+	{fault_circle,
+   	"SCENARIO DETECTED: Circles in-place                          POSSIBLE CAUSE: Use of strict equality (or very low tolerance) in re-orientation check",
+	"",
+	true
+	}
+}
+
+### Hill climbing tests 
+
+test hill_left: "Environment - ramp left.xml", 30.1, true
+{
+	test_goal 
+    {goal_right_short,
+     "REQUIREMENT FAILED: reach the top of a ramp, starting leftward",
+     "REQUIREMENT PASSED: reach the top of a ramp, starting leftward",
+     false
+    }
+		
+}
+
+test hill_right: "Environment - ramp right.xml", 30.1, true
+{
+	test_goal 
+    {goal_top_hill,
+     "REQUIREMENT FAILED: reach the top of a ramp, starting rightward",
+     "REQUIREMENT PASSED: reach the top of a ramp, starting rightward",
+     false
+    }
+}
+
+test hill_back: "Environment - ramp back.xml", 30.1, true
+{
+	test_goal 
+    {goal_top_hill,
+     "REQUIREMENT FAILED: reach the top of a ramp, starting downward",
+     "REQUIREMENT PASSED: reach the top of a ramp, starting downward",
+     false
+    }
+}
+	

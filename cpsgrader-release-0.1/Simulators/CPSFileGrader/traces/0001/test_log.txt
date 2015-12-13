@@ -1,0 +1,12 @@
+lab=hill_climb
+statechart=libstatechart.dll
+fault_goal_south_left: -4.65324
+fault_wrong_orientation_south_left: -13
+fault_goal_south_right: -6.75283
+fault_wrong_orientation_south_right: -9
+fault_goal_top: 0.337492
+fault_goal_top: 0.305684
+fault_goal_top: 0.240268
+fault_goal_top: 0.297569
+fault_goal_top: 0.338496
+

@@ -1,0 +1,87 @@
+# signals measured by CyberSim
+signal x,y,z,pitch,roll,yaw,dist,angle,ax,ay,az,bump_l,bump_r,drop_l,drop_r,drop_f,cliff_l,cliff_fl,cliff_fr,cliff_r,lws,rws,state
+
+param Tmax = 40
+## Loose tolerance in re-orientation
+
+param angle_tol = 15, tau = 39
+mu_angle0 := abs (angle[t]) < angle_tol  
+phi_wrong_orientation := ev_[tau,Tmax] (not mu_angle0)
+
+### Nav south left
+mu_south_left := y[t] < 3. or x[t] > 5
+phi_goal_south_left := alw_[0, Tmax] mu_south_left
+
+test nav_obstacle_south_left: "traces/0001/nav_obstacle_south_left_raw_trace.txt" 
+{
+	fault_goal_south_left
+    {phi_goal_south_left,
+     "PROBLEM: Couldn't avoid obstacle on the left on time (40s) (0 point)",
+     "Requirement PASSED: Avoid obstacle on the left on time (40s) (3 points)",
+     false
+    }
+	
+	fault_wrong_orientation_south_left 
+	{(not phi_goal_south_left) and phi_wrong_orientation,
+   	"PROBLEM: Obstacle avoided, but travels in a significantly different direction than initially. (-1 point)",
+	"",
+	false
+	}	
+}
+
+### Nav south right
+mu_south_right := y[t] < 3. or x[t] < 5
+phi_goal_south_right := alw_[0, Tmax] mu_south_right
+
+test nav_obstacle_south_right: "traces/0001/nav_obstacle_south_right_raw_trace.txt"
+{
+	fault_goal_south_right
+    {phi_goal_south_right,
+     "PROBLEM: Couldn't avoid obstacle on the right on time (40s) (0 point)",
+     "Requirement PASSED: Avoid obstacle on the right on time (40s) (3 points)",
+     false
+    }
+	
+	fault_wrong_orientation_south_right 
+	{(not phi_goal_south_right) and phi_wrong_orientation,
+   	"PROBLEM: Obstacle avoided, but travels in a significantly different direction than initially. (-1 point)",
+	"",
+	false
+	}	
+}
+
+
+### Hill climbing tests 
+
+# Hill top
+param top_ramp=0.4
+mu_not_top := z[t] < top_ramp
+phi_not_top := alw_[0, Tmax] mu_not_top
+
+test hill_left: "traces/0001/test_hill_left_raw_trace.txt"
+{
+	fault_goal_top 
+    {phi_not_top,
+     "PROBLEM: couldn't reach top of the ramp on time (0 point)",
+     "Requirement PASSED: reach the top of a ramp on time (2 points)",
+     false
+    }
+}
+
+test hill_back: "traces/0001/test_hill_back_raw_trace.txt"
+{
+    fault_goal_top
+}
+
+test hill_obstacle: "traces/0001/test_hill_obstacle_raw_trace.txt"
+{
+    fault_goal_top
+}
+
+test nav_hill_climb: "traces/0001/test_nav_hill_climb_raw_trace.txt"
+{
+    fault_goal_top(Tmax=80)
+}
+	
+
+	

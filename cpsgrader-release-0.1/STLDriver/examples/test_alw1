@@ -1,0 +1,2 @@
+mu_y := y[t] > 0. 
+alw_muy := alw_[0, 0.2]  (mu_y)

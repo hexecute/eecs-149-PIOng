@@ -1,0 +1,7 @@
+# sub formula
+
+mu_x := x[t] > 0. 
+mu_y := y[t] > 0. 
+
+#not_muy := not (mu_y)
+mux_and_muy := mu_x and mu_y

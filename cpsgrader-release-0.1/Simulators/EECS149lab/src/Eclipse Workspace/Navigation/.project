@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Navigation</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>C Statechart</name>
+			<type>2</type>
+			<locationURI>$%7BSRC%7D/C%20Statechart</locationURI>
+		</link>
+		<link>
+			<name>irobot</name>
+			<type>2</type>
+			<locationURI>$%7BSRC%7D/irobot</locationURI>
+		</link>
+		<link>
+			<name>myrio</name>
+			<type>2</type>
+			<locationURI>$%7BSRC%7D/myrio</locationURI>
+		</link>
+		<link>
+			<name>visa</name>
+			<type>2</type>
+			<locationURI>$%7BSRC%7D/visa</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SRC</name>
+			<value>$%7BPARENT-1-WORKSPACE_LOC%7D</value>
+		</variable>
+	</variableList>
+</projectDescription>
