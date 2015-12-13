@@ -30,6 +30,10 @@ float currPseudoVelocity[3];
 float RAD2DEG = 180 / PI;
 unsigned long recordedTime;
 unsigned long startingTime;
+unsigned long t2,t1;
+
+boolean state1 = false;
+
 
 void (*reset)() = 0;
 
@@ -51,7 +55,9 @@ void setup()
   
   getRawAccelData();
   getRawGyroData();
-  
+
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
   while (Serial.readString() != "s")
   {
     getFilteredAccelData();
@@ -73,6 +79,7 @@ void setup()
     recordedTime = millis();
   }
   startingTime = millis();
+  t1 = millis();
   
 }
 
@@ -144,8 +151,79 @@ void loop()
   Serial.print(my);
   Serial.print(",");
   Serial.println(mz);
-  }
 
+
+
+  //Starting realtime check for forehand drive..
+  /*
+  param preMidTime = 1.49
+  param midTime_1 = 1.55
+  param midTime_2 = 1.94
+  param postMidTime = 1.99
+
+  # define region
+  preMid := ay[t]<1.0
+  mid := az[t]> 0.65 and ay[t]> 0 and ax[t]>0
+  postMid := ay[t]< 0 and ax[t]<0
+  
+  
+  # counter property  
+  
+  preMidProperty := ev_[0, preMidTime] preMid
+  midProperty := ev_[ midTime_1, midTime_2 ] mid
+  postMidProperty := ev_[postMidTime, Tmax] postMid
+    
+  */
+  
+  //check pre region
+  //if at time t1
+  /*if(ay<1.0 && t1 - millis()<threshold){ 
+    state1 = true;
+    }else{
+      t1=millis();
+      }
+      */
+  //Mid region
+  //Attempting basic classifier considering only the mid region from the STL formula  
+  /*
+  if(!state1 && az> 0.65 and ay> 0.2 and ax>0.3){
+    t2 = millis()/1000.0;
+    state1 = true;
+    digitalWrite(13, HIGH);
+    }
+  if (state1 && t2-(millis()/1000.0)>3.0){
+    state1 = false;
+    digitalWrite(13, LOW);
+   }
+   */
+    
+  /*
+  t2 = current time
+  if at time t2-t1>threshold()
+else t1 = current time
+  */
+  //Post region
+  /*
+
+  if state1 and state2, and condition
+
+*/
+  
+ }
+
+//Mid region
+
+  //Attempting basic classifier considering only the mid region from the STL formula  
+  getRawAccelData();
+  if(!state1 && az> 0.65 and ay> 0.2 and ax>0.3){
+    t2 = millis()/1000.0;
+    state1 = true;
+    digitalWrite(13, HIGH);
+    }
+  if (state1 && (millis()/1000.0)-t2>2.0){
+    state1 = false;
+    digitalWrite(13, LOW);
+   }
   
   /*
   //chip.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
