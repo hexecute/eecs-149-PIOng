@@ -1,0 +1,28 @@
+Robot
+		ID: iRobot Create_R0
+				Sensor
+						ID: Cliff Sensor 0
+						ID: Cliff Sensor 1
+						ID: Cliff Sensor 2
+						ID: Cliff Sensor 3
+						ID: Bumper 0
+						ID: Bumper 1
+						ID: Bumper 2
+						ID: Bumper 3
+						ID: Accelerometer
+						ID: Wall Sensor 
+				Joint
+				Actuator
+						ID: Left Motor
+						ID: Right Motor
+				Robot Component
+						ID: Body Frame
+						ID: Wheel 1
+						ID: Wheel 2
+						ID: Support
+						ID: Caster
+						ID: Caster Axis
+
+
+Obstacle
+						ID: Board_O1

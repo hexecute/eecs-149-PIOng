@@ -1,0 +1,11 @@
+### trace test 
+final_test: "Environment - Navigation and Hill Climb 1.xml", 50., true
+{
+    final_goal
+	{  
+	alw_[0,50 ] z[t] < 0.3,
+	"FAILED",
+	"PASSED",
+	false 
+	}
+}

@@ -1,0 +1,2 @@
+mu_y := y[t] > 0. 
+not_muy := not (mu_y)

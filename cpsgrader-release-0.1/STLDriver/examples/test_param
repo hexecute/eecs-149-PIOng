@@ -1,0 +1,6 @@
+# sub formula
+
+param tau= 5, p = 10
+mu_x := x[t] > p
+phi := ev_[0, tau] mu_x
+
