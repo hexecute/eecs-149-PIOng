@@ -5,10 +5,15 @@ using System.IO.Ports;
 public class Mover : MonoBehaviour
 {
 	public GameObject thingToMove;
-	private SerialPort serialPort = new SerialPort("\\\\.\\COM8", 9600);
+	private SerialPort serialPort = new SerialPort("\\\\.\\COM9", 9600);
 	private Rigidbody rigidBodyOfThing;
+    float roll, pitch;
+    float ax, ay, az, mag;
+    float time;
 
-	void Start()
+
+
+    void Start()
 	{
 		serialPort.Open();
 		serialPort.ReadTimeout = 100;
@@ -50,8 +55,37 @@ public class Mover : MonoBehaviour
 
 					}
 				}
+                else if (splitResult.Length == 10)
+                {
+                    try
+                    {
+                        time = float.Parse(splitResult[0]);
+                        ax = float.Parse(splitResult[1]);
+                        ay = float.Parse(splitResult[2]);
+                        az = float.Parse(splitResult[3]);
+                        mag = Mathf.Sqrt(Mathf.Pow(ax, 2) + Mathf.Pow(ay, 2) + Mathf.Pow(az, 2));
+                        Quaternion AddRot = Quaternion.identity;
 
-				else if (splitResult.Length == 7)
+
+
+                        //roll = Mathf.Atan2(ay,ax) * 180 / Mathf.PI;
+                        //pitch = Mathf.Atan2(-ax, Mathf.Sqrt(ay * ay + az * az)) * 180 / Mathf.PI;
+                        roll = Mathf.Abs(Mathf.Atan2(ax/mag, az/mag) * 180 / Mathf.PI);
+                        //pitch = -Mathf.Atan2(ay/mag, az/mag) * 180 / Mathf.PI;
+                        AddRot.eulerAngles = new Vector3(0, 0/*yaw*/, roll);
+                        rigidBodyOfThing.rotation *= AddRot;
+
+
+                        //Debug.Log(result);
+                        Debug.Log("roll :"+roll);
+                        //Debug.Log(pitch);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                else if (splitResult.Length == 7)
 				{
 					try
 					{
