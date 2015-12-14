@@ -64,7 +64,12 @@ void setup()
   pinMode(11, OUTPUT);
   pinMode(12, OUTPUT);
   
-  digitalWrite(13, LOW);/*
+  digitalWrite(13, LOW);
+  //digitalWrite(10, HIGH);
+  
+  
+  
+  /*
   while (Serial.readString() != "s")
   {
     
@@ -106,8 +111,8 @@ void loop()
   getRawData();
   recordedTime = millis();
   
-  
-  /*Serial.print((recordedTime-startingTime) / 1000.0);
+  /*
+  Serial.print((recordedTime-startingTime) / 1000.0);
   Serial.print(",");
   Serial.print(a_xyz[0]);
   Serial.print(",");
@@ -191,21 +196,42 @@ else t1 = current time
   //Attempting basic classifier considering only the mid region from the STL formula  
   getRawData();
   //FD
-  if(!stateFD && !stateFC && !stateBD && !stateBC && a_xyz[0]> 0.3 && a_xyz[1]>0.2 && a_xyz[2]> 0.65){
+  
+  if(!stateFD && !stateFC && !stateBD && !stateBC && a_xyz[0]> 0.3 && a_xyz[1]<0.2 && a_xyz[2]> 0.65){
     t2 = millis()/1000.0;
     stateFD = true;
     delay(20);
     getRawData();
-    if(a_xyz[0]> 0.3 && a_xyz[1]>0.2 && a_xyz[2]> 0.65)
+    if(a_xyz[0]> 0.3 && a_xyz[1]<0.2 && a_xyz[2]> 0.65)
     digitalWrite(10, HIGH);
     
     }
   //BD
-  if(!stateFD && !stateFC && !stateBD && !stateBC && a_xyz[0]< 0.5 && a_xyz[1]>0.65 && a_xyz[2]< 0.75){
+  if(!stateFD && !stateFC && !stateBD && !stateBC && a_xyz[0]> 0.2 && a_xyz[1]>0.65 && a_xyz[2]< 0){
     t2 = millis()/1000.0;
     stateBD = true;
     digitalWrite(11, HIGH);
     }
+    
+  //BC  
+  if(!stateFD && !stateFC && !stateBD && !stateBC && a_xyz[0]< 0 && a_xyz[1]<-1.3 && a_xyz[2]> 0.85){
+    t2 = millis()/1000.0;
+    stateBC = true;
+    //delay(15);
+    //getRawData();
+    //if(a_xyz[0]< 0 && a_xyz[1]<-1.3 && a_xyz[2]> 0.85){
+    digitalWrite(11, HIGH);
+    digitalWrite(12, HIGH);
+    //}
+    
+  }
+  
+  //FC  
+  if(!stateFD && !stateFC && !stateBD && !stateBC && a_xyz[0]> 0.15 && a_xyz[1]<-1.2 && a_xyz[2]> -0.4 && a_xyz[2]< 0){
+    t2 = millis()/1000.0;
+    stateFC = true;
+    digitalWrite(12, HIGH);
+  }
 
   //RESET STATES AND LIGHT  
   if ((stateFD||stateFC||stateBD||stateBC) && (millis()/1000.0)-t2>2.0){
@@ -215,6 +241,7 @@ else t1 = current time
     stateBC = false;
     digitalWrite(10, LOW);
     digitalWrite(11, LOW);
+    digitalWrite(12, LOW);
    }
   
   
