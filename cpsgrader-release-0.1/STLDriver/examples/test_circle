@@ -1,0 +1,13 @@
+
+
+# reorienting 
+reorient_left := (abs(lws[t] + rws[t]) < 1) and (rws[t] > 1) 
+reorient_right := (abs(lws[t] + rws[t]) <1) and (lws[t] > 1) 
+reorient := (reorient_left) or (reorient_right) 
+
+# circles  
+yaw0 := abs(yaw[t])< 5 
+circle := (yaw0) and (reorient until_[1, 50] (yaw0))
+ev_circle := ev_[0,10] (circle)
+ 
+

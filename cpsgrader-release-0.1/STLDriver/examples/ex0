@@ -1,0 +1,3 @@
+# this is the simplest formula.
+signal x
+phi:= x[t] > 0

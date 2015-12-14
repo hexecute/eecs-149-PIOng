@@ -1,0 +1,3 @@
+When creating new simulation environments, LabVIEW places manifest and ID list files under a Robotics Simulator target. These files will not be automatically included in an Application Builder specification.
+
+To ensure the new environment is included in a build specification, place the new manifest and ID file and the RSC folder to the "enviroments" virtual folder in the project. The virtual folder will include the environment in the build.

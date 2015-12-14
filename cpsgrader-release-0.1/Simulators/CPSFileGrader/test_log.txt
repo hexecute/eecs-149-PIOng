@@ -1,0 +1,3 @@
+logPingPong: 0.144
+
+Number of positive STL tests: 1/1

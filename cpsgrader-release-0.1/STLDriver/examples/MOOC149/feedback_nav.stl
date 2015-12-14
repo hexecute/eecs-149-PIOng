@@ -1,0 +1,98 @@
+### Avoid left
+avoid_left_region := y[t] < 3.5 or x[t] > 4
+goal_left_short := alw_[0, 30.] avoid_left_region 
+goal_left_long := alw_[0, 50.] avoid_left_region 
+
+### Avoid right
+avoid_right_region := y[t] < 3.5 or x[t] < 6
+goal_right_short := alw_[0, 30.] avoid_right_region 
+goal_right_long := alw_[0, 50.] avoid_right_region 
+
+
+## Circle 
+
+param small_ws=1
+reorient_left := (abs(lws[t] + rws[t]) < small_ws) and (rws[t] > small_ws) 
+reorient_right := (abs(lws[t] + rws[t]) <1) and (lws[t] > 1) 
+reorient := (reorient_left) or (reorient_right) 
+
+yaw0 := abs(yaw[t])< 5 
+circle := (yaw0) and (reorient until_[1, 50] (yaw0))
+ev_circle := ev_[0, 20.] (circle)
+
+## Loose tolerance in re-orientation
+
+param yaw_tol = 5
+yaw45 := abs (yaw[t] - 45) < yaw_tol  
+wrong_orientation := ev_[29,30] (not yaw45 and y[t]>3)
+
+### trace tests
+
+test obstacle_left: "Environment - short obstacle left.xml", 30.1, true
+{
+	fault_goal 
+    {goal_left_short,
+     "PROBLEM: Couldn't avoid obstacle facing left on time (30s)",
+     "Requirement PASSED: Avoid obstacle facing left on time (30s)",
+     false
+    }
+
+	fault_circle 
+	{ev_circle,
+   	"PROBLEM DETECTED: Circles in-place. A possible cause is the use of strict equality (or very low tolerance) in re-orientation check",
+	"",
+	true
+	}
+
+
+test obstacle_right: "Environment - short obstacle right.xml", 30.1, true
+{
+	fault_goal 
+    {goal_right_short,
+     "REQ FAILED: Couldn't avoid obstacle on the right",
+     "REQ PASSED: Avoided obstacle on the right",
+     false
+    }
+
+	fault_loose_tol 
+	{wrong_orientation,
+   	"PROBLEM DETECTED: Obstacle avoided, but post-orientation off. A possible cause is the use of too loose tolerance in re-orientation check",
+	"",
+	true
+	}
+}
+
+test obstacle_right: "Environment - short obstacle right.xml", 30.1, true
+{
+	fault_goal 
+    {goal_right_short,
+     "PROBLEM: Couldn't avoid obstacle facing left on time (30s)",
+     "Requirement PASSED: Avoid obstacle facing left on time (30s)",
+     false
+    }
+
+	fault_circle 
+	{ev_circle,
+   	"PROBLEM DETECTED: Circles in-place                          POSSIBLE CAUSE: Use of strict equality (or very low tolerance) in re-orientation check",
+	"",
+	true
+	}
+}
+
+test obstacle_right_long: "Environment - obstacle right.xml", 30.1, true
+{
+	fault_goal 
+    {goal_right_long,
+     "REQ FAILED: Couldn't avoid obstacle on the right",
+     "REQ PASSED: Avoided obstacle on the right",
+     false
+    }
+
+	fault_circle 
+	{fault_circle,
+   	"SCENARIO DETECTED: Circles in-place                          POSSIBLE CAUSE: Use of strict equality (or very low tolerance) in re-orientation check",
+	"",
+	true
+	}
+}
+

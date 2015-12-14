@@ -1,0 +1,45 @@
+### bumps 
+
+## predicates
+mu_bump := bump_l[t] +  bump_r[t] > 0.5
+mu_bump_l := bump_l[t] > 0.5
+mu_bump_r := bump_r[t] > 0.5
+
+## events 
+evt_bump_up := (not mu_bump) and (ev_[0, 0.1] (mu_bump))
+evt_bump_down := mu_bump and (ev_[0, 0.1] (not mu_bump))
+
+evt_bump_r_up := (not mu_bump_r) and (ev_[0, 0.1] (mu_bump_r))
+evt_bump_r_down := mu_bump_r and (ev_[0, 0.1] (not mu_bump_r))
+
+evt_bump_l_up := (not mu_bump_l) and (ev_[0, 0.1] (mu_bump_l))
+evt_bump_l_down := mu_bump_l and (ev_[0, 0.1] (not mu_bump_l))
+
+## formulas 
+quick_rebump := evt_bump_down and ev_[0.2, 2] evt_bump_up 
+bump_l_then_bump_r := evt_bump_l_down and (ev_[0, .2] ( ( not mu_bump ) until_[0, 10] (evt_bump_r_up) ))
+
+phi_quick_rebump := ev_[0, 30] (quick_rebump)  
+phi_alw_bump := ev_[0, 30] alw_[0, 1] ( mu_bump ) 
+phi_bump_left_right := ev_[0, 30] (bump_l_then_bump_r)
+
+
+### Nav east right
+mu_east_right := y[t] > 5. or x[t] < 3. 
+phi_goal_east_right := alw_[0, 30.] mu_east_right 
+
+### Nav south_east left
+mu_south_east_left := x[t] - y[t] > 0. or x[t]+y[t] < 6. 
+phi_goal_south_east_left := alw_[0, 30.] mu_south_east_left 
+
+
+### Nav south left
+mu_south_left := y[t] < 3. or x[t] > 5
+phi_goal_south_left := alw_[0, 30.] mu_south_left
+
+
+### Nav south right
+mu_south_right := y[t] < 3. or x[t] < 5
+phi_goal_south_right := alw_[0, 30.] mu_south_right
+
+
