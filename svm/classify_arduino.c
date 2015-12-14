@@ -88,7 +88,6 @@ String logger[20];
 
 unsigned long recordedTime;
 unsigned long startingTime;
-unsigned long t2,t1;
 
 float data[ 30 ];
 int n = 0, head = 0;
@@ -126,27 +125,9 @@ void setup()
 
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW);
-  while (Serial.readString() != "s")
-  {
-  chip.getMotion9(&(a_xyz[0]), &(a_xyz[1]), &(a_xyz[2]), &(g_xyz[0]), &(g_xyz[1]), &(g_xyz[2]), &(m_xyz[0]), &(m_xyz[1]), &(m_xyz[2]));
-    /*
-    getFilteredAccelData();
-    getPseudoVelocity();
-    getFilteredGyroData();
-    
-    Serial.print("I");
-    Serial.print(",");
-    Serial.print(0);
-    Serial.print(",");
-    Serial.print(180);
-    Serial.print(",");   
-    Serial.println(atan2(sqrt(sq(a_xyz[0])) + sq(a_xyz[1]), a_xyz[2]) * RAD2DEG);
-    */
-
-    recordedTime = millis();
-  }
-  startingTime = millis();
-  t1 = millis();
+  // Unity wait
+  while (Serial.readString() != "s");
+  startingTime =  millis();
 
   int i;
   for (i = 0; i < 30; i++)
@@ -155,7 +136,6 @@ void setup()
   head = 0;
   n = 0;
 }
-
 
 void loop()
 {
@@ -166,7 +146,8 @@ void loop()
   unsigned long timestamp = (recordedTime-startingTime);
   //Serial.println( timestamp );
 
-  chip.getMotion6(&(a_xyz[0]), &(a_xyz[1]), &(a_xyz[2]), &(g_xyz[0]), &(g_xyz[1]), &(g_xyz[2]));
+  chip.getMotion6( &(a_xyz[0]), &(a_xyz[1]), &(a_xyz[2]), &(g_xyz[0]),
+                   &(g_xyz[1]), &(g_xyz[2]) );
 
   data[ head ] = data[ head ] + a_xyz[0] / 16384;
   data[ head + 1 ] = data[ head + 1 ] + a_xyz[1] / 16384;
@@ -176,7 +157,7 @@ void loop()
   data[ head + 5 ] = data[ head + 5 ] + g_xyz[2] * 250 / 32768;
   n++;
 
-  // Move onto next 5th time segment
+  // Move onto next 5th time segment (1 time segment = 3 seconds)
   if ( timestamp > 600 )
   {
     // Update startingTime as soon as possible
@@ -200,9 +181,9 @@ void loop()
     // Classification
     if (is_class( data, forehand ))
       // type = type + 2;
-      Serial.print( "forehand " );
+      Serial.print( "Forehand " );
     else
-      Serial.print( "backhand " );
+      Serial.print( "Backhand " );
     if (is_class( data, drive ))
       // type = type + 1;
       Serial.println( "drive" );
