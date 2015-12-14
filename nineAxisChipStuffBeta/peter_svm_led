@@ -220,8 +220,16 @@ void loop()
     data[ head + 4 ] = 0;
     data[ head + 5 ] = 0;
   }
-  
-   switch (type){
+  // Flicker code
+  else if ( timestamp < 100 )
+  {
+	 digitalWrite(10, LOW);
+    digitalWrite(11, LOW);
+    digitalWrite(12, LOW);
+  } 
+  else 
+  {
+    switch (type){
       case 0:
       digitalWrite(10, LOW); //Cyan: Backhand chop
       digitalWrite(11, HIGH);
@@ -242,5 +250,7 @@ void loop()
       digitalWrite(11, LOW);
       digitalWrite(12, LOW); //Red: Forehand drive
       break;
-   }
+    }  
+  }
+  
 }
