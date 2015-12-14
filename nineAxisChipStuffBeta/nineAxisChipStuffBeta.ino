@@ -32,7 +32,10 @@ unsigned long recordedTime;
 unsigned long startingTime;
 unsigned long t2,t1;
 
-boolean state1 = false;
+boolean stateFD = false;
+boolean stateFC = false;
+boolean stateBD = false;
+boolean stateBC = false;
 
 
 void (*reset)() = 0;
@@ -53,16 +56,17 @@ void setup()
   Serial.println(chip.testConnection() ? "Connection successful" : "Connection failed");
   startingTime = millis();
   
-  getRawAccelData();
-  getRawGyroData();
+  getRawData();
 
   pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(12, OUTPUT);
+  
+  digitalWrite(13, LOW);/*
   while (Serial.readString() != "s")
   {
-    getFilteredAccelData();
-    getPseudoVelocity();
-    getFilteredGyroData();
     
     Serial.print("I");
     Serial.print(",");
@@ -78,6 +82,8 @@ void setup()
 
     recordedTime = millis();
   }
+  */
+  recordedTime = millis();
   startingTime = millis();
   t1 = millis();
   
@@ -85,54 +91,23 @@ void setup()
 
 void loop()
 {
-  String input = Serial.readString();
+  /*String input = Serial.readString();
   if (input == "r")
   {
     reset();
   }
-  else if (input == "l")
-  {
-    /*logger[i] = String("Reading:" +
-      String(a_xyz[0]) + "," +
-      String(a_xyz[1]) + "," +
-      String(a_xyz[2]) + "," +
-      String(g_xyz[0]) + "," +
-      String(g_xyz[1]) + "," +
-      String(g_xyz[2]) + "," +
-      String(mx) + "," +
-      String(my) + "," +
-      String(mz) 
-      );
-      */
-      logger[i] = String("Reading Time:" + String((recordedTime-startingTime)/ 1000.0));
-      
-    //Serial.println(logger[i]);
-    //Serial.println(a_xyz[0] + "lol");
-    //Serial.println("lalala");
-    i++;
-    if(i==9) input = "e";
-      
-  }
-  else if (input == "e")
-  {
-    stillLogging = !stillLogging;
-    i=0;
-    while(i<10){
-    Serial.println(logger[i]);
-    i++;
-    }
-  }
+  */
+  
   if(stillLogging){
   //getFilteredAccelData();
   //getPseudoVelocity();
   //getFilteredGyroData(); 
 
-  getRawAccelData();
-  getRawGyroData();
+  getRawData();
   recordedTime = millis();
   
   
-  Serial.print((recordedTime-startingTime) / 1000.0);
+  /*Serial.print((recordedTime-startingTime) / 1000.0);
   Serial.print(",");
   Serial.print(a_xyz[0]);
   Serial.print(",");
@@ -151,7 +126,7 @@ void loop()
   Serial.print(my);
   Serial.print(",");
   Serial.println(mz);
-
+*/
 
 
   //Starting realtime check for forehand drive..
@@ -178,7 +153,7 @@ void loop()
   //check pre region
   //if at time t1
   /*if(ay<1.0 && t1 - millis()<threshold){ 
-    state1 = true;
+    stateFD = true;
     }else{
       t1=millis();
       }
@@ -186,13 +161,13 @@ void loop()
   //Mid region
   //Attempting basic classifier considering only the mid region from the STL formula  
   /*
-  if(!state1 && az> 0.65 and ay> 0.2 and ax>0.3){
+  if(!stateFD && az> 0.65 and ay> 0.2 and ax>0.3){
     t2 = millis()/1000.0;
-    state1 = true;
+    stateFD = true;
     digitalWrite(13, HIGH);
     }
-  if (state1 && t2-(millis()/1000.0)>3.0){
-    state1 = false;
+  if (stateFD && t2-(millis()/1000.0)>3.0){
+    stateFD = false;
     digitalWrite(13, LOW);
    }
    */
@@ -205,7 +180,7 @@ else t1 = current time
   //Post region
   /*
 
-  if state1 and state2, and condition
+  if stateFD and state2, and condition
 
 */
   
@@ -214,122 +189,45 @@ else t1 = current time
 //Mid region
 
   //Attempting basic classifier considering only the mid region from the STL formula  
-  getRawAccelData();
-  if(!state1 && az> 0.65 and ay> 0.2 and ax>0.3){
+  getRawData();
+  //FD
+  if(!stateFD && !stateFC && !stateBD && !stateBC && a_xyz[0]> 0.3 && a_xyz[1]>0.2 && a_xyz[2]> 0.65){
     t2 = millis()/1000.0;
-    state1 = true;
-    digitalWrite(13, HIGH);
+    stateFD = true;
+    delay(20);
+    getRawData();
+    if(a_xyz[0]> 0.3 && a_xyz[1]>0.2 && a_xyz[2]> 0.65)
+    digitalWrite(10, HIGH);
+    
     }
-  if (state1 && (millis()/1000.0)-t2>2.0){
-    state1 = false;
-    digitalWrite(13, LOW);
+  //BD
+  if(!stateFD && !stateFC && !stateBD && !stateBC && a_xyz[0]< 0.5 && a_xyz[1]>0.65 && a_xyz[2]< 0.75){
+    t2 = millis()/1000.0;
+    stateBD = true;
+    digitalWrite(11, HIGH);
+    }
+
+  //RESET STATES AND LIGHT  
+  if ((stateFD||stateFC||stateBD||stateBC) && (millis()/1000.0)-t2>2.0){
+    stateFD = false;
+    stateFC = false;
+    stateBD = false;
+    stateBC = false;
+    digitalWrite(10, LOW);
+    digitalWrite(11, LOW);
    }
   
-  /*
-  //chip.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-  recordedTime = millis();
-  Serial.print(recordedTime / 1000.0);
-  Serial.print(",");
-  Serial.print(ax);
-  Serial.print(",");
-  Serial.print(ay);
-  Serial.print(",");
-  Serial.print(az);
-  Serial.print(",");
-  Serial.print(gx);
-  Serial.print(",");
-  Serial.print(gy);
-  Serial.print(",");
-  Serial.print(gz);
-  Serial.print(",");
-  Serial.print(mx);
-  Serial.print(",");
-  Serial.print(my);
-  Serial.print(",");
-  Serial.println(mz);
-  */
   
-  /*
-  Serial.print(currPseudoVelocity[0]);
-  Serial.print(",");
-  Serial.print(currPseudoVelocity[1]);
-  Serial.print(",");
-  Serial.print(currPseudoVelocity[2]);
-  Serial.print(",");
-  Serial.print(g_xyz[0]);
-  Serial.print(",");
-  Serial.print(g_xyz[1]);
-  Serial.print(",");
-  Serial.print(g_xyz[2]);
-  Serial.print(",");
-  Serial.println(recordedTime / 1000.0);
-  */
-  //delay(80);
 }
 
-void getRawAccelData()
+void getRawData()
 {
   chip.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
   
   a_xyz[0] = (float) ax / 16384;
   a_xyz[1] = (float) ay / 16384;
   a_xyz[2] = (float) az / 16384;
-}
-
-void getRawGyroData()
-{
-  chip.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-  
   g_xyz[0] = (float) gx * 250 / 32768;
   g_xyz[1] = (float) gy * 250 / 32768;
   g_xyz[2] = (float) gz * 250 / 32768;
 }
-
-void getFilteredAccelData()
-{
-  float a_lastFilteredData[3];
-  a_lastFilteredData[0] = a_xyz[0];
-  a_lastFilteredData[1] = a_xyz[1];
-  a_lastFilteredData[2] = a_xyz[2];
-  
-  getRawAccelData();
-  
-  
-  a_xyz[0] = lowPassFilter(a_xyz[0], 0.1, a_lastFilteredData[0]);
-  a_xyz[1] = lowPassFilter(a_xyz[1], 0.1, a_lastFilteredData[1]);
-  a_xyz[2] = lowPassFilter(a_xyz[2], 0.1, a_lastFilteredData[2]);
-}
-
-void getFilteredGyroData()
-{
-  float g_lastFilteredData[3];
-  g_lastFilteredData[0] = g_xyz[0];
-  g_lastFilteredData[1] = g_xyz[1];
-  g_lastFilteredData[2] = g_xyz[2];
-  
-  getRawGyroData();
-  
-  g_xyz[0] = (0.98 * lowPassFilter(g_xyz[0], 0.01, g_lastFilteredData[0]) * 0.15) + (0.02 * a_xyz[0]);
-  g_xyz[1] = (0.98 * lowPassFilter(g_xyz[1], 0.01, g_lastFilteredData[1]) * 0.15) + (0.02 * a_xyz[1]);
-  g_xyz[2] = (0.98 * lowPassFilter(g_xyz[2], 0.01, g_lastFilteredData[2]) * 0.15) + (0.02 * a_xyz[2]) - 0.02;
-}
-
-void getPseudoVelocity()
-{
-  float a_lastFilteredData[3];
-  a_lastFilteredData[0] = a_xyz[0];
-  a_lastFilteredData[1] = a_xyz[1];
-  a_lastFilteredData[2] = a_xyz[2];
-  
-  getFilteredAccelData();
-  
-  currPseudoVelocity[0] = a_xyz[0] - a_lastFilteredData[0];
-  currPseudoVelocity[1] = a_xyz[1] - a_lastFilteredData[1];
-  currPseudoVelocity[2] = a_xyz[2] - a_lastFilteredData[2];
-}
-
-float lowPassFilter(float rawData, float filterValue, float lastFilteredData)
-{
-  return (rawData * filterValue) + (lastFilteredData * (1 - filterValue));  
-}
- 
