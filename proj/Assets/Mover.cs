@@ -13,6 +13,7 @@ public class Mover : MonoBehaviour
 	float highestPowerLevel;
 	private Text outputText1;
 	private Text outputText2;
+	private Text outputText3;
 
 	float getTruePowerLevel(Vector3 pseudoPowerLevel)
 	{
@@ -34,10 +35,14 @@ public class Mover : MonoBehaviour
 			Debug.Log("not connected");
 		}
 		serialPort.Write("r");
+		serialPort.Write("k");
+		serialPort.Write("s");
 		outputText1 = GameObject.Find("Top Panel Text 1").GetComponent<Text>();
 		outputText2 = GameObject.Find("Top Panel Text 2").GetComponent<Text>();
+		outputText3 = GameObject.Find("Bottom Panel Text 2").GetComponent<Text>();
 		outputText1.text = "Highest power level overall: " + highestPowerLevel;
 		outputText2.text = "Current measured power level: 0";
+		outputText3.text = "Torturing the Dinosaur with Your Power!";
 	}
 
 	void Update()
@@ -47,21 +52,16 @@ public class Mover : MonoBehaviour
 			try
 			{
 				string result = serialPort.ReadLine();
-				string[] splitResult = result.Split(',');
 
-				if ((splitResult.Length == 4) && (splitResult[0].Equals("I")))
+				if (result.Equals("o") || result.Equals("p"))
 				{
-					try
-					{
-						serialPort.Write("s");
-					}
-					catch (System.Exception)
-					{
-
-					}
+					serialPort.Close();
+					Application.LoadLevel("betterPaddle");
 				}
 
-                else if (splitResult.Length == 10)
+				string[] splitResult = result.Split(',');
+
+                if (splitResult.Length == 10)
 				{
 					try
 					{

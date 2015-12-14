@@ -52,18 +52,6 @@ void setup()
     getFilteredAccelData();
     getPseudoPowerLevel();
     getFilteredGyroData();
-    
-    Serial.print("I");
-    Serial.print(",");
-    Serial.print(atan2(a_xyz[1], sqrt(sq(a_xyz[0])) + sq(a_xyz[2])) * (180.0 / PI));
-    //Serial.print(0);
-    Serial.print(",");        
-    Serial.print(atan2(a_xyz[0], sqrt(sq(a_xyz[0])) + sq(a_xyz[2])) * (180.0 / PI));
-    //Serial.print(180);
-    Serial.print(",");   
-    Serial.println(atan2(sqrt(sq(a_xyz[0]) + sq(a_xyz[1])), a_xyz[2]) * (180.0 / PI));
-    //Serial.println(0);
-
 
     recordedTime = millis();
   }
