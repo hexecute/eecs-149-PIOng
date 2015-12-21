@@ -179,6 +179,9 @@ void loop()
   // Move onto next 5th time segment
   if ( timestamp > 600 )
   {
+
+    float data_in_order[30];
+
     // Update startingTime as soon as possible
     startingTime = millis();
     Serial.print("---");
@@ -197,13 +200,46 @@ void loop()
     else
       head = head + 6;
 
+    // Shuffle circular buffer into the correct order
+    // Unfortunately, for loops are slow so....
+    data_in_order[0] = data[ head ];
+    data_in_order[1] = data[ (head + 1) % 30 ];
+    data_in_order[2] = data[ (head + 2) % 30 ];
+    data_in_order[3] = data[ (head + 3) % 30 ];
+    data_in_order[4] = data[ (head + 4) % 30 ];
+    data_in_order[5] = data[ (head + 5) % 30 ];
+    data_in_order[6] = data[ (head + 6) % 30 ];
+    data_in_order[7] = data[ (head + 7) % 30 ];
+    data_in_order[8] = data[ (head + 8) % 30 ];
+    data_in_order[9] = data[ (head + 9) % 30 ];
+    data_in_order[10] = data[ (head + 10) % 30 ];
+    data_in_order[11] = data[ (head + 11) % 30 ];
+    data_in_order[12] = data[ (head + 12) % 30 ];
+    data_in_order[13] = data[ (head + 13) % 30 ];
+    data_in_order[14] = data[ (head + 14) % 30 ];
+    data_in_order[15] = data[ (head + 15) % 30 ];
+    data_in_order[16] = data[ (head + 16) % 30 ];
+    data_in_order[17] = data[ (head + 17) % 30 ];
+    data_in_order[18] = data[ (head + 18) % 30 ];
+    data_in_order[19] = data[ (head + 19) % 30 ];
+    data_in_order[20] = data[ (head + 20) % 30 ];
+    data_in_order[21] = data[ (head + 21) % 30 ];
+    data_in_order[22] = data[ (head + 22) % 30 ];
+    data_in_order[23] = data[ (head + 23) % 30 ];
+    data_in_order[24] = data[ (head + 24) % 30 ];
+    data_in_order[25] = data[ (head + 25) % 30 ];
+    data_in_order[26] = data[ (head + 26) % 30 ];
+    data_in_order[27] = data[ (head + 27) % 30 ];
+    data_in_order[28] = data[ (head + 28) % 30 ];
+    data_in_order[29] = data[ (head + 29) % 30 ];
+
     // Classification
-    if (is_class( data, forehand ))
+    if (is_class( data_in_order, forehand ))
       // type = type + 2;
       Serial.print( "forehand " );
     else
       Serial.print( "backhand " );
-    if (is_class( data, drive ))
+    if (is_class( data_in_order, drive ))
       // type = type + 1;
       Serial.println( "drive" );
     else
